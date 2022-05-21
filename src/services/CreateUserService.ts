@@ -1,6 +1,8 @@
 import prismaClient, { exclude } from "../prisma";
 import { hash } from "bcryptjs";
 import { sign } from "jsonwebtoken";
+import { GenerateToken } from "../provider/GenerateToken";
+import { GenerateRefreshToken } from "../provider/GenerateRefreshToken";
 
 interface IUserRequest {
   name: string;
@@ -36,22 +38,18 @@ class CreateUserService {
       },
     });
 
-    const token = sign(
-      {
-        email: userData.email,
-      },
-      process.env.JWT_SECRET,
-      {
-        subject: userData.id,
-        expiresIn: "1d",
-      }
-    );
+    const generateToken = new GenerateToken();
+    const token = await generateToken.execute(userData.id);
+
+    const generateRefreshToken = new GenerateRefreshToken();
+    const refresToken = await generateRefreshToken.execute(userData.id);
 
     const userWithoutPassword = exclude(userData, "password");
 
     return {
       user: userWithoutPassword,
       token,
+      refreshToken: refresToken,
     };
   }
 }

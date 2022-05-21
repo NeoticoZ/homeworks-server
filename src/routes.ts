@@ -6,6 +6,8 @@ import { CreateUserController } from "./controller/CreateUserController";
 import { ListNotificationsController } from "./controller/ListNotificationsController";
 import { ListTasksController } from "./controller/ListTasksController";
 import { ListUsersController } from "./controller/ListUsersController";
+import { RefreshTokenController } from "./controller/RefreshTokenController";
+import { ReturnUserDataController } from "./controller/ReturnUserDataController";
 import { UpdateTaskStatusController } from "./controller/UpdateTaskStatusController";
 import { ensureAdmin } from "./middleware/ensureAdmin";
 import { ensureAuthenticated } from "./middleware/ensureAuthenticated";
@@ -20,6 +22,8 @@ const createTaskController = new CreateTaskController();
 const listTasksController = new ListTasksController();
 const updateTaskStatusController = new UpdateTaskStatusController();
 const listUsersController = new ListUsersController();
+const returnUserDataController = new ReturnUserDataController();
+const refreshTokenController = new RefreshTokenController();
 
 router.get(
   "/notifications",
@@ -33,6 +37,7 @@ router.get(
   ensureAdmin,
   listUsersController.handle
 );
+router.get("/user", ensureAuthenticated, returnUserDataController.handle);
 
 router.post("/register", createUserController.handle);
 router.post("/login", authenticateUserController.handle);
@@ -48,6 +53,7 @@ router.post(
   ensureAdmin,
   createTaskController.handle
 );
+router.post("/refresh-token", refreshTokenController.handle);
 
 router.patch("/task", ensureAuthenticated, updateTaskStatusController.handle);
 

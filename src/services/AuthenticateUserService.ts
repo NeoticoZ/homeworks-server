@@ -1,6 +1,7 @@
 import { compare } from "bcryptjs";
-import { sign } from "jsonwebtoken";
 import prismaClient, { exclude } from "../prisma";
+import { GenerateRefreshToken } from "../provider/GenerateRefreshToken";
+import { GenerateToken } from "../provider/GenerateToken";
 
 interface IAuthenticateRequest {
   email: string;
@@ -25,22 +26,24 @@ class AuthenticateUserService {
       throw new Error("Email ou senha incorreta");
     }
 
-    const token = sign(
-      {
-        email: userData.email,
+    const generateToken = new GenerateToken();
+    const token = await generateToken.execute(userData.id);
+
+    await prismaClient.refreshToken.deleteMany({
+      where: {
+        userId: userData.id,
       },
-      process.env.JWT_SECRET,
-      {
-        subject: userData.id,
-        expiresIn: "1d",
-      }
-    );
+    });
+
+    const generateRefreshToken = new GenerateRefreshToken();
+    const refreshToken = await generateRefreshToken.execute(userData.id);
 
     const userWithoutPassword = exclude(userData, "password");
 
     return {
       user: userWithoutPassword,
       token,
+      refreshToken: refreshToken,
     };
   }
 }

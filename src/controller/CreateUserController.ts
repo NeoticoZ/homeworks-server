@@ -8,13 +8,13 @@ class CreateUserController {
     const createUserService = new CreateUserService();
 
     try {
-      const { token, user } = await createUserService.execute({
+      const { token, user, refreshToken } = await createUserService.execute({
         name,
         email,
         password,
         admin,
       });
-      return response.json({ token, user });
+      return response.json({ token, user, refreshToken });
     } catch (err) {
       return response.json(err.message);
     }
