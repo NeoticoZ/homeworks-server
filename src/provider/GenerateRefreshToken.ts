@@ -15,7 +15,7 @@ class GenerateRefreshToken {
 
     const token = sign({}, process.env.JWT_SECRET, {
       subject: id,
-      expiresIn: "1d",
+      expiresIn: "30d",
     });
 
     return token;

@@ -35,7 +35,7 @@ export async function ensureAuthenticated(
   } catch (err) {
     return response
       .status(401)
-      .json({ error: true, code: "token.invalid", message: "Token inválido" })
+      .json({ error: true, code: "token.expired", message: "Token expirado" })
       .end();
   }
 }

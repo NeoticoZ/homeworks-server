@@ -16,7 +16,7 @@ class GenerateToken {
       process.env.JWT_SECRET,
       {
         subject: userId,
-        expiresIn: "60m",
+        expiresIn: "1d",
       }
     );
 
