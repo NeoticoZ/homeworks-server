@@ -17,7 +17,7 @@ class AuthenticateUserService {
     });
 
     if (!userData) {
-      throw new Error("Usuário não encontrado");
+      throw new Error("Email ou senha incorreta");
     }
 
     const passwordMatch = await compare(password, userData.password);

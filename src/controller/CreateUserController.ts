@@ -16,7 +16,7 @@ class CreateUserController {
       });
       return response.json({ token, user, refreshToken });
     } catch (err) {
-      return response.status(401).json(err.message);
+      return response.status(401).json({ error: err.message });
     }
   }
 }
